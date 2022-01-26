@@ -10,7 +10,7 @@ require_once "./ZKTeco_Attendance_Access_Using_PHP/zklibrary.php";
  * se debe considerar un cronjob por cada reloj y este debe ser ejecutado con un maximo de 1 segundo (idealmente 0.5 seg).
  * @exec : ejemplo de ejecución cron o manual : http://localhost/iclock/cdata?SN=CEUY191060144&IP=10.6.17.216
   */
-
+echo "lorem";
 ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 
