@@ -11,8 +11,7 @@ require_once "./ZKTeco_Attendance_Access_Using_PHP/zklibrary.php";
  * @exec : ejemplo de ejecución cron o manual : http://localhost/iclock/cdata?SN=CEUY191060144&IP=10.6.17.216
   */
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 
 if (
