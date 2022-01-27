@@ -8,8 +8,9 @@ require_once "./ZKTeco_Attendance_Access_Using_PHP/zklibrary.php";
  * Date: 2022/01/25
  * @description: se recibe data por get con la ip y serial del dispositivo, este archivo debe ser ejecutado por un CronJob o tarea programada
  * se debe considerar un cronjob por cada reloj y este debe ser ejecutado con un maximo de 1 segundo (idealmente 0.5 seg).
- * @exec : ejemplo de ejecución  manual : http://localhost/iclock/cdata?SN=CEUY191060144&IP=10.6.17.216
- * @exec : ejemplo de ejecución cron  /usr/bin/curl --silent http://localhost/iclock/cdata.php\?SN\=CEUY191060144\&IP\=10.6.17.116 &>/dev/null
+ * @exec : ejemplo de ejecución  manual: http://localhost/iclock/cdata?SN=CEUY191060144&IP=10.6.17.216
+ * @exec : ejemplo de ejecución cron: 1 * * * * /usr/bin/curl --silent "http://localhost/iclock/cdata.php?SN=CEUY191060144&IP=10.6.17.116" &>/dev/null
+
   */
 
 ini_set('display_errors', 'On');
@@ -63,7 +64,8 @@ if (
 function getAsistencia($serial = '', $ip = "")
 {
     $zk = new ZKLibrary($ip, 4370, 'UDP');
-    $zk->connect();
+    var_dump($zk->connect());
+    die();
     $zk->disableDevice();
     $arregloData = $zk->getAttendance();
 
