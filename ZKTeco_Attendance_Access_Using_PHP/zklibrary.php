@@ -1169,13 +1169,13 @@ class ZKLibrary
 					array_push($attendance, array($uid, $id, $state, $timestamp, $type));
 					$attendance_data = substr($attendance_data, 40);
 
-					$attendance[] = [
-						'uid' => $uid,
-						'id' => $id,
-						'state' => $state,
-						'timestamp' => $timestamp,
-						'type' => $type
-					];
+					// $attendance[] = [
+					// 	'uid' => $uid,
+					// 	'id' => $id,
+					// 	'state' => $state,
+					// 	'timestamp' => $timestamp,
+					// 	'type' => $type
+					// ];
 				}
 			}
 			return $attendance;
