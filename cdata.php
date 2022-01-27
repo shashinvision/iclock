@@ -66,7 +66,9 @@ function getAsistencia($serial = '', $ip = "")
     $zk->disableDevice();
     $arregloData = $zk->getAttendance();
 
+    echo "<pre>";
     var_dump($arregloData);
+    echo "</pre>";
 
     if (!empty($arregloData)) {
 
