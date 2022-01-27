@@ -64,11 +64,14 @@ if (
 function getAsistencia($serial = '', $ip = "")
 {
     $zk = new ZKLibrary($ip, 4370, 'UDP');
-    var_dump($zk->connect());
-    die();
+    $zk->connect();
     $zk->disableDevice();
     $arregloData = $zk->getAttendance();
 
+    echo "<pre>";
+    var_dump($zk->recv());
+    echo "</pre>";
+    echo "<hr>";
     echo "<pre>";
     var_dump($arregloData);
     echo "</pre>";
