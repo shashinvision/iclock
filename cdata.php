@@ -1,7 +1,7 @@
 <?php
 require_once './env.php';
-require_once "./ZKTeco_Attendance_Access_Using_PHP/zklibrary.php";
-
+// require_once "./ZKTeco_Attendance_Access_Using_PHP/zklibrary.php";
+require_once('zklib/ZKLib.php');
 
 /*
  * @author: Felipe Mancilla
@@ -17,11 +17,10 @@ ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 
 if (
-    isset($_GET['SN']) && isset($_GET['IP'])
+    isset($_GET['ip'])
 ) {
 
-    $serial = $_GET['SN'];
-    $ip = $_GET['IP'];
+    $ip = $_GET['ip'];
 
     // $respuesta = <<<EOT
     //     GET OPTION FROM:$serial
@@ -44,7 +43,7 @@ if (
 
     //place this before any script you want to calculate time
     $time_start = microtime(true);
-    getAsistencia($serial, $ip);
+    getAsistencia($ip);
     $time_end = microtime(true);
 
     //dividing with 60 will give the execution time in minutes otherwise seconds
@@ -56,61 +55,82 @@ if (
 
 /**
  * 
- * @param string $serial 
  * @param string $ip 
  * @return void 
  */
 
-function getAsistencia($serial = '', $ip = "", $type_conn = 'UDP')
+function getAsistencia($ip = "")
 {
+    $asistencia = array();
 
-    if (isset($_GET['TYPE_CONN'])) {
-        $type_conn = $_GET['TYPE_CONN'];
-    }
+    $zk = new ZKLib($ip);
+    $ret = $zk->connect();
+
+    if ($ret) {
+        $zk->disableDevice();
+        $zk->setTime(date('Y-m-d H:i:s')); // Synchronize time
+
+        $serialSub = substr($zk->serialNumber(), 14);
+        $serial = substr($serialSub, 0, -1);
+        $attendance = $zk->getAttendance();
+        // echo "<pre>";
+        // var_dump($serial);
+        // echo "<hr>";
+        // var_dump($attendance);
+        // echo "</pre>";
+        if (count($attendance) > 0) {
+            $attendance = array_reverse($attendance, true);
+            sleep(1);
 
 
-    $zk = new ZKLibrary($ip, 4370, $type_conn);
-    $zk->connect();
-    $zk->disableDevice();
-    $arregloData = $zk->getAttendance();
+            foreach ($attendance as $attItem) {
+                $asistencia['uid'] = $attItem['uid'];
+                $asistencia['id'] = $attItem['id'];
+                $asistencia['name'] = isset($users[$attItem['id']]) ? $users[$attItem['id']]['name'] : $attItem['id'];
+                $asistencia['state'] = ZK\Util::getAttState($attItem['state']);
+                $asistencia['date'] = date("d-m-Y", strtotime($attItem['timestamp']));
+                $asistencia['time'] = date("H:i:s", strtotime($attItem['timestamp']));
+                $asistencia['serial'] = $serial;
+                $asistencia['type'] = ZK\Util::getAttType($attItem['type']);
+                $asistencia['ip'] = $ip;
+            }
 
-    echo "<pre>";
-    var_dump($arregloData);
-    echo "</pre>";
+            setDataAsistenciaBd($asistencia);
+            $zk->clearAttendance(); // Remove attendance log only if not empty
 
-    if (!empty($arregloData)) {
-
-        $arregloData[0][0] = $serial;
-        $arregloData[0][2] = $ip;
-
-        if (setDataAsistenciaBd($arregloData[0])) {
-            echo "Registro de marcación actualizado";
-        } else {
-            echo "No hay registros";
         }
-    } else {
-        echo "no se registran entradas";
+        $zk->enableDevice();
     }
-    $zk->clearAttendance();
-    $zk->enableDevice();
-    // $zk->testVoice();
+
     $zk->disconnect();
 }
 
 /**
  * Se encarga de ingresar la data en el modelo de la BBDD creado
- * @param array $arregloData 
+ * @param array $asistencia 
  * @return bool 
  */
 
-function setDataAsistenciaBd($arregloData)
+function setDataAsistenciaBd($asistencia)
 {
 
-    $serial = $arregloData[0];
-    $id_rut_usuario = $arregloData[1];
-    $ip = $arregloData[2];
-    $tipo_marca = $arregloData[4]; // en el biometrico de test arroja 0 en entrada y 4 en salida, 201 es marca erronea registrada.
-    // $dateTime = $arregloData[3]; // se prefirió usar NOW() directamente desde la BBDD, ya que el cronjob actualizará cada 1 seg. o 0.5 seg.
+    echo "<pre>";
+    echo "<hr>";
+    echo "asistencia";
+    var_dump($asistencia);
+    echo "<hr>";
+    echo "</hr>";
+
+
+    $uid = $asistencia['uid'];
+    $id = $asistencia['id'];
+    $name = $asistencia['name'];
+    $state = $asistencia['state'];
+    $date = $asistencia['date'];
+    $time = $asistencia['time'];
+    $serial = $asistencia['serial'];
+    $type = $asistencia['type'];
+    $ip = $asistencia['ip'];
 
     $conn = new mysqli(SERVER, USER, PASS, DB);
 
@@ -118,7 +138,7 @@ function setDataAsistenciaBd($arregloData)
         die("Conexión fallida: " . $conn->connect_error);
     }
 
-    $query = "INSERT INTO marcacion_reloj (serial_reloj, ip_reloj, id_rut_usuario, date_added, tipo_marca, estado) VALUES('$serial', '$ip', $id_rut_usuario, NOW(), $tipo_marca,  1);";
+    $query = "INSERT INTO marcaciones (id, uid, name, state, date, time, serial, type, ip, created_at) VALUES('$id', '$uid', $name, '$state', '$date', '$time', '$serial', '$type', '$ip', NOW());";
 
     if ($conn->query($query)) {
         $conn->close();
