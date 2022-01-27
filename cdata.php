@@ -75,10 +75,6 @@ function getAsistencia($serial = '', $ip = "", $type_conn = 'UDP')
     $arregloData = $zk->getAttendance();
 
     echo "<pre>";
-    var_dump($zk->recv());
-    echo "</pre>";
-    echo "<hr>";
-    echo "<pre>";
     var_dump($arregloData);
     echo "</pre>";
 
