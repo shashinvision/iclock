@@ -61,9 +61,15 @@ if (
  * @return void 
  */
 
-function getAsistencia($serial = '', $ip = "")
+function getAsistencia($serial = '', $ip = "", $type_conn = 'UDP')
 {
-    $zk = new ZKLibrary($ip, 4370, 'UDP');
+
+    if (isset($_GET['TYPE_CONN'])) {
+        $type_conn = $_GET['TYPE_CONN'];
+    }
+
+
+    $zk = new ZKLibrary($ip, 4370, $type_conn);
     $zk->connect();
     $zk->disableDevice();
     $arregloData = $zk->getAttendance();
