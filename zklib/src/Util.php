@@ -56,7 +56,14 @@ class Util
     const ATT_STATE_FINGERPRINT = 1;
     const ATT_STATE_PASSWORD = 0;
     const ATT_STATE_CARD = 2;
-    
+
+    /**
+     * * Esto corresponde a los codigos que se ingresan desde el biometrico
+     * * Se pueden añadir hasta 6 opciones distinas que posteriormente seran comparadas con getAttType($type)
+     * * pueden ser editadas agregando botones tales como: ingreso, salida, inicio horas extras, fin horas extras, almuerzo, once, cena, teniendo en cuenta que los botones que se usaran en el dispositivo son: flecha arriba, flecha abajo, flecha derecha, flecha izquiera, F1 y F2
+     * 
+     *  */
+
     const ATT_TYPE_CHECK_IN = 0;
     const ATT_TYPE_CHECK_OUT = 1;
     const ATT_TYPE_OVERTIME_IN = 4;
@@ -192,7 +199,7 @@ class Util
         }
 
         if ($chksum > 0) {
-            $chksum = -($chksum);
+            $chksum = - ($chksum);
         } else {
             $chksum = abs($chksum);
         }
@@ -233,7 +240,6 @@ class Util
         $buf = pack('SSSS', $command, $chksum, $session_id, $reply_id);
 
         return $buf . $command_string;
-
     }
 
     /**
@@ -299,7 +305,7 @@ class Util
 
         return $ret;
     }
-    
+
     /**
      * Get Attendance Type string
      * @param integer $type
