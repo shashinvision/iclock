@@ -64,10 +64,17 @@ class Util
      * 
      *  */
 
+    // const ATT_TYPE_CHECK_IN = 0;
+    // const ATT_TYPE_CHECK_OUT = 1;
+    // const ATT_TYPE_OVERTIME_IN = 4;
+    // const ATT_TYPE_OVERTIME_OUT = 5;
+
     const ATT_TYPE_CHECK_IN = 0;
     const ATT_TYPE_CHECK_OUT = 1;
-    const ATT_TYPE_OVERTIME_IN = 4;
-    const ATT_TYPE_OVERTIME_OUT = 5;
+    const ATT_TYPE_DESAYUNO_IN = 4;
+    const ATT_TYPE_ALMUERZO_IN = 5;
+    const ATT_TYPE_ONCE_IN = 2;
+    const ATT_TYPE_CENA_IN = 3;
 
     /**
      * Encode a timestamp send at the timeclock
@@ -315,16 +322,22 @@ class Util
     {
         switch ($type) {
             case self::ATT_TYPE_CHECK_IN:
-                $ret = 'Check-in';
+                $ret = 'Entrada';
                 break;
             case self::ATT_TYPE_CHECK_OUT:
-                $ret = 'Check-out';
+                $ret = 'Salida';
                 break;
-            case self::ATT_TYPE_OVERTIME_IN:
-                $ret = 'Overtime-in';
+            case self::ATT_TYPE_DESAYUNO_IN:
+                $ret = 'Desayuno';
                 break;
-            case self::ATT_TYPE_OVERTIME_OUT:
-                $ret = 'Overtime-out';
+            case self::ATT_TYPE_ALMUERZO_IN:
+                $ret = 'Almuerzo';
+                break;
+            case self::ATT_TYPE_ONCE_IN:
+                $ret = 'Once';
+                break;
+            case self::ATT_TYPE_CENA_IN:
+                $ret = 'Cena';
                 break;
             default:
                 $ret = 'Undefined';
