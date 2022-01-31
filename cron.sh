@@ -1,4 +1,12 @@
 #!/bin/bash
+#Author: Felipe Mancilla
+#date: 2022-01-31
+#web: http://felipemancilla.herokuapp.com/
+# Ejemplo de creación del cronjob aca: 
+# SHELL=/bin/sh
+# PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+# */1 * * * * sh /var/www/html/iclock/cron.sh 10.6.17.116
+
 
 ip=$1;
 
