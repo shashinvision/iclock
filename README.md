@@ -9,4 +9,9 @@
   ```bash
   */1 * * * * sh /var/www/html/iclock/cron.sh 10.6.17.116
   ```
+
+  - Ejemplo de ejecución  manual:
+  ```bash
+  http://localhost/iclock/cdata?ip=10.6.17.216
+  ```
 - Listo ya lo puedes usar
